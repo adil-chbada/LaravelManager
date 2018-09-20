@@ -1,10 +1,13 @@
 # LaravelManager
 <p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
+   	<img class="latest_stable_version_img" src="https://poser.pugx.org/adil-chbada/laravel-manager/v/stable">
+    <img class="total_img" src="https://poser.pugx.org/adil-chbada/laravel-manager/downloads">
+    <img class="latest_unstable_version_img" src="https://poser.pugx.org/adil-chbada/laravel-manager/v/unstable">
+    <img class="license_img" src="https://poser.pugx.org/adil-chbada/laravel-manager/license">
+    <img class="composer_img" src="/phpunit/phpunit/composerlock">                                                                                             
 </p>
+
+
 
 
 This package is to add a web interface for Laravel 5.6 Artisan.
