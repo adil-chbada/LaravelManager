@@ -1,0 +1,19 @@
+{
+    "name": "adil-chbada/laravel-manager",
+    "description": "This package is to add a web interface for Laravel 5.6 Artisan.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adil Chbada",
+            "email": "nanoadil@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Adilchbada\\LaravelManager\\": "src/"
+        }
+    }
+}
