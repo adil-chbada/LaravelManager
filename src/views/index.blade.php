@@ -220,7 +220,7 @@
                     this.lastExec.state = 'inProgress';
                     this.lastExec.cmd = this.cmdWaiting[0];
                     this.cmdWaiting.splice(0, 1);
-                    axios.post('exec', {
+                    axios.post('{{route('laravel_manager_exec')}}', {
                         cmd: this.lastExec.cmd
                     })
                         .then((response) => {
