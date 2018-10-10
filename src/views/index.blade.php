@@ -21,16 +21,12 @@
         <v-content>
             <div>
                 <v-toolbar tabs>
-                    <v-toolbar-side-icon></v-toolbar-side-icon>
-
-                    <v-toolbar-title>LARAVEL MANAGER</v-toolbar-title>
-
-                    <v-spacer></v-spacer>
-
+                    <v-toolbar-side-icon></v-toolbar-side-icon> 
+                    <v-toolbar-title>LARAVEL MANAGER</v-toolbar-title> 
+                    <v-spacer></v-spacer> 
                     <v-btn icon>
                         <v-icon>search</v-icon>
-                    </v-btn>
-
+                    </v-btn> 
                     <v-btn icon>
                         <v-icon>more_vert</v-icon>
                     </v-btn>
@@ -82,14 +78,25 @@
                                                                 {{--style="max-height: 400px"--}}
                                                                 {{--class="scroll-y"--}}
                                                         >
+                                                            <v-checkbox v-model="force">--force</v-checkbox>
                                                             <template v-for="command in favCommands">
-                                                                <v-subheader v-if="command.group">@{{ command.group }}</v-subheader>
+                                                                <v-subheader v-if="command.group">@{{ command.group }}
+                                                                </v-subheader>
                                                                 <template v-for="cmd in command.commands">
-                                                                    <v-list-tile @click="exec(cmd)" :style="{color:getCmdColor (cmd)}">
+                                                                    <v-list-tile @click="exec(cmd)"
+                                                                                 :style="{color:getCmdColor (cmd)}">
                                                                         <v-list-tile-content>
-                                                                            <v-list-tile-title>@{{ cmd.title }}</v-list-tile-title>
-                                                                            <v-list-tile-sub-title>@{{ cmd.description }}</v-list-tile-sub-title>
-                                                                            <v-progress-linear height="2" :indeterminate="true"
+                                                                            <v-list-tile-title>@{{ cmd.title }}
+                                                                               @{{cmd.options}}
+                                                                                <template v-for="option in cmd.options ">
+                                                                                    <v-checkbox v-model="option.value" :title="option.title"></v-checkbox>
+                                                                                </template>
+                                                                            </v-list-tile-title>
+                                                                            <v-list-tile-sub-title>@{{ cmd.description
+                                                                                }}
+                                                                            </v-list-tile-sub-title>
+                                                                            <v-progress-linear height="2"
+                                                                                               :indeterminate="true"
                                                                                                v-if="cmd===lastExec.cmd && lastExec.state==='inProgress'"
                                                                             ></v-progress-linear>
                                                                             <v-progress-linear
@@ -139,21 +146,53 @@
 <script>
     // import {AxiosInstance as axios} from "axios";
 
+    function cmd_(title = null, cmd, description, options = [], fav, state = 0) {
+        cmd = (cmd !== null) ? cmd : title;
+        return {
+            title: title,
+            description: description,
+            cmd: cmd,
+            options: options,
+            fav: fav,
+            state: state,
+            o(script, value = true, title = null) {
+                title = (title !== null) ? title : script
+                $option = this.options.find(function ($option) {
+                    return $option.script == script;
+                });
+                if ($option) {
+                    $option.value = value
+                } else {
+                    this.options.push({script: script, title: title, value: value})
+                }
+                return this;
+            },
+            o_(script, value = false, title = null) {
+                return this.o(script, value, title)
+            }
+        }
+    }
+
+    function cmd(cmd, description, options = []) {
+        return cmd_(cmd, cmd, description, options, true, 0)
+    }
+
     new Vue({
         el: '#app',
         name: 'laravelManager',
         data() {
             return {
                 tabs: null,
+                force: false,
                 commands: [
                     {
                         group: null,
                         commands: [
-                            {title: 'down', description: 'Put the application into maintenance mode', cmd: 'down', fastExec: true, fav: true, state: 0},
-                            {title: 'env', description: 'Display the current framework environment', cmd: 'env', fastExec: true, fav: true, state: 0},
-                            {title: 'list', description: ' Lists commands', cmd: 'list', fastExec: true, fav: true, state: 0},
-                            {title: 'migrate', description: 'Run the database migrations', cmd: 'migrate', fastExec: true, fav: false, state: 0},
-                            {title: 'optimize', description: ' Cache the framework bootstrap files', cmd: 'optimize', fastExec: true, fav: false, state: 0},
+                            cmd('down', 'Put the application into maintenance mode', []).o_('--force').o_('non'),
+                            cmd('env', 'Display the current framework environment', []),
+                            cmd('list', 'Lists commands', []),
+                            // cmd( 'migrate', 'Run the database migrations', []),
+                            // cmd( 'optimize', 'Cache the framework bootstrap files', []),
                         ]
 
 
@@ -161,34 +200,55 @@
                     {
                         group: 'cache',
                         commands: [
-                            {title: 'cache:clear', description: ' Flush the application cache', cmd: 'cache:clear', fastExec: true, fav: true, state: 0},
-                            {title: 'cache:forget', description: ' Remove an item from the cache', cmd: 'cache:forget', fastExec: true, fav: false, state: 0},
-                            {title: 'cache:table', description: 'Create a migration for the cache database table', cmd: 'cache:table', fastExec: true, fav: false, state: 0}
+                            cmd('cache:clear', 'Flush the application cache', []),
+                            // cmd( 'cache:forget', 'Remove an item from the cache', []),
+                            // cmd( 'cache:table', 'Create a migration for the cache database table', []),
                         ]
                     },
                     {
                         group: 'config',
                         commands: [
-                            {title: 'config:cache', description: ' Create a cache file for faster configuration loading', cmd: 'config:cache', fastExec: true, fav: true, state: 0},
-                            {title: 'config:clear', description: ' Remove the configuration cache file', cmd: 'config:clear', fastExec: true, fav: true, state: 0},
+                            cmd('config:cache', 'Create a cache file for faster configuration loading', []),
+                            cmd('config:clear', 'Remove the configuration cache file', []),
                         ]
                     },
-                    {group: 'db', commands: [{title: 'db:seed', description: 'Seed the database with records', cmd: 'db:seed', fastExec: true, fav: true, state: 0}]},
-                    {group: 'key', commands: [{title: 'key:generate', description: 'Set the application key', cmd: 'key:generate', fastExec: true, fav: false, state: 0}]},
+                    {
+                        group: 'db',
+                        commands: [
+                            cmd('db:seed', 'Seed the database with records', []),
+                        ]
+                    },
+                    {
+                        group: 'key',
+                        commands: [
+                            cmd('key:generate', 'Set the application key', []),
+                        ]
+                    },
                     {
                         group: 'migrate',
                         commands: [
-                            {title: 'migrate:fresh', description: 'Drop all tables and re-run all migrations', cmd: 'migrate:fresh', fastExec: true, fav: true, state: 0},
-                            {title: 'migrate:refresh', description: ' Reset and re-run all migrations', cmd: 'migrate:refresh', fastExec: true, fav: false, state: 0},
+                            cmd('migrate:fresh', 'Drop all tables and re-run all migrations', []),
+                            // cmd( 'migrate:refresh', 'Reset and re-run all migrations', []),
                         ]
                     },
-                    {group: 'optimize', commands: [{title: 'optimize:clear', description: ' Remove the cached bootstrap files', cmd: 'optimize:clear', fastExec: true, fav: false, state: 0}]},
-                    {group: 'route', commands: [{title: 'route:list', description: 'List all registered routes', cmd: 'route:list', fastExec: true, fav: false, state: 0}]},
+                    {
+                        group: 'optimize',
+                        commands: [
+                            // cmd( 'optimize:clear', 'Remove the cached bootstrap files', [])
+                        ]
+                    },
+                    {
+                        group: 'route',
+                        commands: [
+                            cmd('route:list', 'List all registered routes', []),
+                        ]
+                    },
                     {
                         group: 'view',
                         commands: [
-                            {title: 'view:cache', description: 'Compile all of the application\'s Blade templates', cmd: 'view:cache', fastExec: true, fav: false, state: 0},
-                            {title: 'view:clear', description: 'Clear all compiled view files', cmd: 'view:clear', fastExec: true, fav: false, state: 0}
+                            // cmd( 'view:cache', 'Compile all of the application\\\'s Blade templates', []),
+                            cmd('view:clear', 'Clear all compiled view files', []),
+                            // cmd( '', '', []),
                         ]
                     },
                     // {group: '', commands: []},
@@ -220,6 +280,8 @@
                     this.lastExec.state = 'inProgress';
                     this.lastExec.cmd = this.cmdWaiting[0];
                     this.cmdWaiting.splice(0, 1);
+                    if (this.force)
+                        this.lastExec.cmd.o('--force')
                     axios.post('{{route('laravel_manager_exec')}}', {
                         cmd: this.lastExec.cmd
                     })
