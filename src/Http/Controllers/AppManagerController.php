@@ -12,7 +12,11 @@ class AppManagerController extends Controller
     }
     public function exec(Request $request){
        $command= $request->get('cmd');
-        \Artisan::call($command['cmd']);
+       $options=[];
+      foreach ($command['options'] as $option) {
+          $options[$option['script']]=$option['value'];
+      }
+        \Artisan::call($command['cmd'],$options);
         return \Artisan::output();
     }
 }
