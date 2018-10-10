@@ -21,16 +21,15 @@
         <v-content>
             <div>
                 <v-toolbar tabs>
-                    <v-toolbar-side-icon></v-toolbar-side-icon> 
-                    <v-toolbar-title>LARAVEL MANAGER</v-toolbar-title> 
-                    <v-spacer></v-spacer> 
+                    <v-toolbar-side-icon></v-toolbar-side-icon>
+                    <v-toolbar-title>LARAVEL MANAGER</v-toolbar-title>
+                    <v-spacer></v-spacer>
                     <v-btn icon>
                         <v-icon>search</v-icon>
-                    </v-btn> 
+                    </v-btn>
                     <v-btn icon>
                         <v-icon>more_vert</v-icon>
                     </v-btn>
-
                 </v-toolbar>
                 <v-tabs
                         centered
@@ -61,58 +60,69 @@
                             <v-card-text>
                                 <v-card>
                                     <v-card-text>
-
-
                                         <v-card>
                                             <v-toolbar color="teal" dark>
                                                 <v-toolbar-side-icon></v-toolbar-side-icon>
-
                                                 <v-toolbar-title>Settings</v-toolbar-title>
                                             </v-toolbar>
                                             <v-layout row>
                                                 <v-flex xs12 sm5>
                                                     <v-card flat>
-                                                        <v-list
-                                                                subheader
-                                                                two-line
-                                                                {{--style="max-height: 400px"--}}
-                                                                {{--class="scroll-y"--}}
-                                                        >
-                                                            <v-checkbox v-model="force">--force</v-checkbox>
-                                                            <template v-for="command in favCommands">
-                                                                <v-subheader v-if="command.group">@{{ command.group }}
-                                                                </v-subheader>
-                                                                <template v-for="cmd in command.commands">
-                                                                    <v-list-tile @click="exec(cmd)"
-                                                                                 :style="{color:getCmdColor (cmd)}">
+                                                         <v-expansion-panel>
+                                                            <template v-for="group in favCommands">
+                                                                <v-expansion-panel-content>
+                                                                    <div slot="header">@{{ group.title }}</div>
+                                                                    <v-card>
+                                                                        <v-card-text>
+                                                                            <v-expansion-panel>
+                                                                                <template v-for="cmd in group.commands">
+                                                                                    <v-expansion-panel-content  :readonly="cmd.options.length==0" >
+                                                                                        <div slot="header">
+                                                                                            @{{ cmd.title }}<v-btn small  @click.stop="exec(cmd)" :style="{color:getCmdColor (cmd)}">run</v-btn>
+                                                                                            <h6>@{{ cmd.description }} </h6>
+                                                                                            <v-progress-linear height="2" :indeterminate="true"
+                                                                                                               v-if="cmd===lastExec.cmd && lastExec.state==='inProgress'"
+                                                                                            ></v-progress-linear>
+                                                                                            <v-progress-linear
+                                                                                                    color="blue-grey"
+                                                                                                    height="2"
+                                                                                                    :indeterminate="true"
+                                                                                                    v-else-if="cmdWaiting.indexOf(cmd) > -1"
+                                                                                            ></v-progress-linear>
+
+                                                                                        </div>
+                                                                                        <v-card v-if="cmd.options.length>0">
+                                                                                            <v-card-text>
+                                                                                                <template v-for="option in cmd.options ">
+                                                                                                    <v-checkbox v-model="option.value" :label="option.title" :title="option.title"></v-checkbox>
+                                                                                                </template>
+                                                                                            </v-card-text>
+                                                                                        </v-card>
+                                                                                    </v-expansion-panel-content>
+                                                                                </template>
+                                                                            </v-expansion-panel>
+                                                                        </v-card-text>
+                                                                    </v-card>
+                                                                </v-expansion-panel-content>
+                                                            </template>
+                                                        </v-expansion-panel>
+
+
+                                                        <v-list v-if="false" subheader two-line>
+                                                            <template v-for="group in favCommands">
+                                                                <v-subheader v-if="group.title">@{{ group.title }}</v-subheader>
+                                                                <template v-for="cmd in group.commands">
+                                                                    <v-list-tile>
                                                                         <v-list-tile-content>
                                                                             <v-list-tile-title>@{{ cmd.title }}
-                                                                               @{{cmd.options}}
-                                                                                <template v-for="option in cmd.options ">
-                                                                                    <v-checkbox v-model="option.value" :title="option.title"></v-checkbox>
-                                                                                </template>
+
                                                                             </v-list-tile-title>
-                                                                            <v-list-tile-sub-title>@{{ cmd.description
-                                                                                }}
-                                                                            </v-list-tile-sub-title>
-                                                                            <v-progress-linear height="2"
-                                                                                               :indeterminate="true"
-                                                                                               v-if="cmd===lastExec.cmd && lastExec.state==='inProgress'"
-                                                                            ></v-progress-linear>
-                                                                            <v-progress-linear
-                                                                                    color="blue-grey"
-                                                                                    height="2"
-                                                                                    :indeterminate="true"
-                                                                                    v-else-if="cmdWaiting.indexOf(cmd) > -1"
-                                                                            ></v-progress-linear>
+                                                                            <v-list-tile-sub-title></v-list-tile-sub-title>
 
                                                                         </v-list-tile-content>
-
                                                                     </v-list-tile>
                                                                 </template>
                                                             </template>
-
-
                                                         </v-list>
                                                     </v-card>
                                                 </v-flex>
@@ -121,15 +131,26 @@
                                                         @{{lastExec.output}}
                                                     </code>
                                                 </v-flex>
-
                                             </v-layout>
                                         </v-card>
-
-
                                     </v-card-text>
-
                                 </v-card>
-
+                            </v-card-text>
+                        </v-card>
+                    </v-tab-item>
+                    <v-tab-item id="tab-2">
+                        <v-card flat>
+                            <v-card-text>
+                                <v-card>
+                                    <v-card-text>
+                                        <p>DB_CONNECTION: {{env("DB_CONNECTION")}}</p>
+                                        <p>DB_HOST: {{env("DB_HOST")}}</p>
+                                        <p>DB_PORT: {{env("DB_PORT")}}</p>
+                                        <p>DB_DATABASE: {{env("DB_DATABASE")}}</p>
+                                        <p>DB_USERNAME: {{env("DB_USERNAME")}}</p>
+                                        <p>DB_PASSWORD: {{env("DB_PASSWORD")}}</p>
+                                    </v-card-text>
+                                </v-card>
                             </v-card-text>
                         </v-card>
                     </v-tab-item>
@@ -184,11 +205,12 @@
             return {
                 tabs: null,
                 force: false,
-                commands: [
+                groups: [
+
                     {
-                        group: null,
+                        title: 'home',
                         commands: [
-                            cmd('down', 'Put the application into maintenance mode', []).o_('--force').o_('non'),
+                            cmd('down', 'Put the application into maintenance mode', []) ,
                             cmd('env', 'Display the current framework environment', []),
                             cmd('list', 'Lists commands', []),
                             // cmd( 'migrate', 'Run the database migrations', []),
@@ -198,7 +220,7 @@
 
                     },
                     {
-                        group: 'cache',
+                        title: 'cache',
                         commands: [
                             cmd('cache:clear', 'Flush the application cache', []),
                             // cmd( 'cache:forget', 'Remove an item from the cache', []),
@@ -206,45 +228,45 @@
                         ]
                     },
                     {
-                        group: 'config',
+                        title: 'config',
                         commands: [
                             cmd('config:cache', 'Create a cache file for faster configuration loading', []),
                             cmd('config:clear', 'Remove the configuration cache file', []),
                         ]
                     },
                     {
-                        group: 'db',
+                        title: 'db',
                         commands: [
                             cmd('db:seed', 'Seed the database with records', []),
                         ]
                     },
                     {
-                        group: 'key',
+                        title: 'key',
                         commands: [
                             cmd('key:generate', 'Set the application key', []),
                         ]
                     },
                     {
-                        group: 'migrate',
+                        title: 'migrate',
                         commands: [
                             cmd('migrate:fresh', 'Drop all tables and re-run all migrations', []),
                             // cmd( 'migrate:refresh', 'Reset and re-run all migrations', []),
                         ]
                     },
                     {
-                        group: 'optimize',
+                        title: 'optimize',
                         commands: [
                             // cmd( 'optimize:clear', 'Remove the cached bootstrap files', [])
                         ]
                     },
                     {
-                        group: 'route',
+                        title: 'route',
                         commands: [
                             cmd('route:list', 'List all registered routes', []),
                         ]
                     },
                     {
-                        group: 'view',
+                        title: 'view',
                         commands: [
                             // cmd( 'view:cache', 'Compile all of the application\\\'s Blade templates', []),
                             cmd('view:clear', 'Clear all compiled view files', []),
@@ -320,10 +342,10 @@
         },
         computed: {
             favCommands() {
-                return this.commands.map(command => {
-                    command.commands = command.commands.filter(cmd => cmd.fav);
-                    return command
-                }).filter(command => command.commands.length > 0);
+                return this.groups.map(group => {
+                    group.commands = group.commands.filter(cmd => cmd.fav);
+                    return group
+                }).filter(group => group.commands.length > 0);
             }
         }
 
