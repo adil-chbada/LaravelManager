@@ -32,10 +32,10 @@
                     </v-btn>
                 </v-toolbar>
                 <v-tabs
-                        centered
-                        color="cyan"
-                        dark
-                        icons-and-text
+                    centered
+                    color="cyan"
+                    dark
+                    icons-and-text
                 >
                     <v-tabs-slider color="yellow"></v-tabs-slider>
 
@@ -51,7 +51,7 @@
                         feedback
                         <v-icon>feedback</v-icon>
                     </v-tab>
-                    <v-tab href="#tab-3">
+                    <v-tab href="#tab-4">
                         Contacter le développeur
                         <v-icon>contact_mail</v-icon>
                     </v-tab>
@@ -66,9 +66,9 @@
                                                 <v-toolbar-title>Settings</v-toolbar-title>
                                             </v-toolbar>
                                             <v-layout row>
-                                                <v-flex xs12 sm5>
+                                                <v-flex xs12 sm4>
                                                     <v-card flat>
-                                                         <v-expansion-panel>
+                                                        <v-expansion-panel>
                                                             <template v-for="group in favCommands">
                                                                 <v-expansion-panel-content>
                                                                     <div slot="header">@{{ group.title }}</div>
@@ -76,18 +76,19 @@
                                                                         <v-card-text>
                                                                             <v-expansion-panel>
                                                                                 <template v-for="cmd in group.commands">
-                                                                                    <v-expansion-panel-content  :readonly="cmd.options.length==0" >
+                                                                                    <v-expansion-panel-content :readonly="cmd.options.length==0">
                                                                                         <div slot="header">
-                                                                                            @{{ cmd.title }}<v-btn small  @click.stop="exec(cmd)" :style="{color:getCmdColor (cmd)}">run</v-btn>
+                                                                                            @{{ cmd.title }}
+                                                                                            <v-btn small @click.stop="exec(cmd)" :style="{color:getCmdColor (cmd)}">run</v-btn>
                                                                                             <h6>@{{ cmd.description }} </h6>
                                                                                             <v-progress-linear height="2" :indeterminate="true"
                                                                                                                v-if="cmd===lastExec.cmd && lastExec.state==='inProgress'"
                                                                                             ></v-progress-linear>
                                                                                             <v-progress-linear
-                                                                                                    color="blue-grey"
-                                                                                                    height="2"
-                                                                                                    :indeterminate="true"
-                                                                                                    v-else-if="cmdWaiting.indexOf(cmd) > -1"
+                                                                                                color="blue-grey"
+                                                                                                height="2"
+                                                                                                :indeterminate="true"
+                                                                                                v-else-if="cmdWaiting.indexOf(cmd) > -1"
                                                                                             ></v-progress-linear>
 
                                                                                         </div>
@@ -126,9 +127,9 @@
                                                         </v-list>
                                                     </v-card>
                                                 </v-flex>
-                                                <v-flex xs12 sm7>
+                                                <v-flex xs12 sm8>
                                                     <code id="console">
-                                                        @{{lastExec.output}}
+                                                        <pre v-html="lastExec.output"></pre>
                                                     </code>
                                                 </v-flex>
                                             </v-layout>
@@ -143,15 +144,51 @@
                             <v-card-text>
                                 <v-card>
                                     <v-card-text>
-                                        <p>DB_CONNECTION: {{env("DB_CONNECTION")}}</p>
-                                        <p>DB_HOST: {{env("DB_HOST")}}</p>
-                                        <p>DB_PORT: {{env("DB_PORT")}}</p>
-                                        <p>DB_DATABASE: {{env("DB_DATABASE")}}</p>
-                                        <p>DB_USERNAME: {{env("DB_USERNAME")}}</p>
-                                        <p>DB_PASSWORD: {{env("DB_PASSWORD")}}</p>
+                                        <v-container class="text-md-center">
+                                            <p>database.default: {{config("database.default")}}</p>
+                                            @if(config("database.default")=="mysql")
+                                                <p>host: {{config("database.connections.mysql.host")}}</p>
+                                                <p>port: {{config("database.connections.mysql.port")}}</p>
+                                                <p>database:{{config("database.connections.mysql.database")}}</p>
+                                                <p>username: {{config("database.connections.mysql.username")}}</p>
+                                            @elseif(config("database.default")=="pgsql")
+                                                <p>host: {{config("database.connections.pgsql.host")}}</p>
+                                                <p>port: {{config("database.connections.pgsql.port")}}</p>
+                                                <p>database:{{config("database.connections.pgsql.database")}}</p>
+                                                <p>username: {{config("database.connections.pgsql.username")}}</p>
+                                            @elseif(config("database.default")=="sqlite")
+                                                <p>database: {{config("database.connections.sqlite.database")}}</p>
+                                                <p>driver: {{config("database.connections.sqlite.driver")}}</p>
+                                                <p>prefix: {{config("database.connections.sqlite.prefix")}}</p>
+                                            @elseif(config("database.default")=="sqlsrv")
+                                                <p>host: {{config("database.connections.sqlsrv.host")}}</p>
+                                                <p>port: {{config("database.connections.sqlsrv.port")}}</p>
+                                                <p>database: {{config("database.connections.sqlsrv.database")}}</p>
+                                                <p>username: {{config("database.connections.sqlsrv.username")}}</p>
+                                            @endif
+                                            <p>PASSWORD:
+                                                <img style="-webkit-user-select: none;width: 20px;" src="https://i.giphy.com/media/PhDMqjnue1ji0/giphy.webp">
+                                                <img style="-webkit-user-select: none;width: 20px;" src="https://i.giphy.com/media/PhDMqjnue1ji0/giphy.webp">
+                                                <img style="-webkit-user-select: none;width: 20px;" src="https://i.giphy.com/media/PhDMqjnue1ji0/giphy.webp">
+                                            </p>
+                                        </v-container>
+
+
                                     </v-card-text>
                                 </v-card>
                             </v-card-text>
+                        </v-card>
+                    </v-tab-item>
+                    <v-tab-item id="tab-3">
+                        <v-card>
+                            <v-card-text><br><br>
+                                <h1 class="text-md-center">coming soon</h1></v-card-text>
+                        </v-card>
+                    </v-tab-item>
+                    <v-tab-item id="tab-4">
+                        <v-card>
+                            <v-card-text><br><br>
+                                <h1 class="text-md-center">coming soon</h1></v-card-text>
                         </v-card>
                     </v-tab-item>
                 </v-tabs>
@@ -210,7 +247,7 @@
                     {
                         title: 'home',
                         commands: [
-                            cmd('down', 'Put the application into maintenance mode', []) ,
+                            cmd('down', 'Put the application into maintenance mode', []),
                             cmd('env', 'Display the current framework environment', []),
                             cmd('list', 'Lists commands', []),
                             // cmd( 'migrate', 'Run the database migrations', []),

@@ -9,6 +9,11 @@ class AppManagerController extends Controller
 {
     public function index(){
         return view('laravelManager::index');
+    }  
+    public function clear(){
+        \Artisan::call('cache:clear');
+        \Artisan::call('config:cache');
+        return \Artisan::output();
     }
     public function exec(Request $request){
        $command= $request->get('cmd');
