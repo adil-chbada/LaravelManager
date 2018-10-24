@@ -69,6 +69,7 @@
                                                 <v-flex xs12 sm4>
                                                     <v-card flat>
                                                         <v-expansion-panel>
+                                                            <v-text-field v-model="cmd_text" @keyup.enter="cmd"></v-text-field>
                                                             <template v-for="group in favCommands">
                                                                 <v-expansion-panel-content>
                                                                     <div slot="header">@{{ group.title }}</div>
@@ -287,7 +288,10 @@
                         title: 'migrate',
                         commands: [
                             cmd('migrate:fresh', 'Drop all tables and re-run all migrations', []),
-                            // cmd( 'migrate:refresh', 'Reset and re-run all migrations', []),
+                            cmd( 'migrate:refresh', 'Reset and re-run all migrations', []),
+                            cmd( 'migrate:reset', 'Reset and re-run all migrations', []).o_('--force',true),
+                            cmd( 'migrate', 'run all migrations', []).o_('--force',true),
+
                         ]
                     },
                     {
@@ -319,6 +323,7 @@
                     output: null,
                 },
                 cmdWaiting: [],
+                cmd_text: ''
                 // activeCmd:null,
             }
         },
@@ -357,6 +362,25 @@
                         this.send();
                     });
                 }
+            },
+            cmd(text_cmd) {
+                axios.post('{{route('cmd')}}', {
+                    cmd: this.cmd_text
+                })
+                    .then((response) => {
+                        this.cmd_text=''
+                        this.lastExec.state = 'ok';
+                        this.lastExec.output = response.data;
+                    })
+                    .catch((error) => {
+                        this.lastExec.state = 'err';
+                        if (error.response)
+                            this.lastExec.output = error.response.data.message;
+                    }).finally(() => {
+                    this.$vuetify.goTo('#console');
+                    this.send();
+                });
+
             },
             getCmdColor(cmd) {
                 let color = null;
