@@ -375,7 +375,12 @@
                     .catch((error) => {
                         this.lastExec.state = 'err';
                         if (error.response)
-                            this.lastExec.output = error.response.data.message;
+                            if(error.response.data.message)
+                                this.lastExec.output = error.response.data.message;
+                             else
+                                this.lastExec.output = error.response.data;
+
+                             
                     }).finally(() => {
                     this.$vuetify.goTo('#console');
                     this.send();
