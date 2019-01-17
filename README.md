@@ -10,4 +10,8 @@
  
  
 This package is to add a web interface for Laravel 5.6 Artisan.
+Installing :
+composer require adil-chbada/laravel-manager
+=>
+after install go to  this  URL : http://localhost/lManager
 	
