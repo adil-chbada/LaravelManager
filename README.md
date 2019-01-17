@@ -11,6 +11,6 @@ This package is to add a web interface for Laravel 5.6 Artisan.
 
 <h2>Installing :<b>composer require adil-chbada/laravel-manager</b></h2>
 <br>
-<h2>after install go to  this  URL :<b> http://localhost:8000/lManager</b></h2>
+<h2>after install go to  this  URL :<b> http://localhost:8000/lManager </b></h2>
 <b>NOTE</b>
-<p>If you want to execute "php artisan clear:cache", use :<b> http://localhost:8000/clear </ b> that helps resolve many issues	
+<p>If you want to execute "php artisan clear:cache", use :<b> http://localhost:8000/clear </b> that helps resolve many issues	</p>
